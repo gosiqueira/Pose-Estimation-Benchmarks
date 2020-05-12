@@ -1,0 +1,17 @@
+name: pose_estimation
+channels:
+    - anaconda
+    - defaults
+    - conda-forge
+dependencies:
+    - python=3.6
+    - pip
+    - numpy
+    - matplotlib
+    - seaborn
+    - pandas
+    - opencv
+    - cudatoolkit
+    - pip:
+        - mxnet-cu102
+        - gluoncv

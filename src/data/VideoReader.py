@@ -15,7 +15,7 @@ class VideoReader(object):
         if self.reader:
             if self.reader.isOpened():
                 ret, frame = self.reader.read()
-                return frame
+                return ret, frame
             else:
                 raise StopIteration
         else:

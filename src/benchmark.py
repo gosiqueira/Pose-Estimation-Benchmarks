@@ -39,10 +39,11 @@ def gen_benchmark(pose_estimator, video_folder):
         video_filepath = os.path.join(video_folder, video)
         video_reader.set_video(video_filepath)
         while(video_reader.is_opened()):
-            frame = video_reader.get_frame()
-            model_in = time.time()
-            net.get_poses(frame)
-            fps_meter.update(1.0 / (time.time() - model_in))
+            ret, frame = video_reader.get_frame()
+            if ret:
+                model_in = time.time()
+                net.get_poses(frame)
+                fps_meter.update(1.0 / (time.time() - model_in))
 
         logging.info(f'Average FPS: {fps_meter.avg}')
 
