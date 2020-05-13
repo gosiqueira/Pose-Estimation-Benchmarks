@@ -6,5 +6,10 @@ A simple benchmark on current state-of-the-art pose estimation methods.
 
 Current methods:
 * AlphaPose (MXNet)
-* Simples Baselines for Human Pose Estimation (MXNet)
+* Alphapose (PyTorch) (comming soon)
 * Detectron Coco Keypoints
+* HRNet: High-Resolution Network (comming soon)
+* Higher HRNet (comming soon)
+* OpenPose (comming soon)
+* Simple Baselines for Human Pose Estimation (MXNet)
+* Simple Baselines for Human Pose Estimation (PyTorch) (comming soon)

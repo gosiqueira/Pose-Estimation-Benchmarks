@@ -11,12 +11,12 @@ from methods import model_zoo
 from utils.AverageMeter import AverageMeter
 
 LOG_FORMAT = '[%(levelname)s - %(name)s]: %(asctime)s - %(message)s'
-POSE_ESTIMATORS = ['AlphaPoseMXNet', 'SimpleBaselineMXNet']
+POSE_ESTIMATORS = ['AlphaPoseMXNet', 'SimpleBaselineMXNet', 'DetectronCocoKeypoints']
 
 def get_args():
     parser = argparse.ArgumentParser()
     
-    parser.add_argument('-m', '--method', help='Pose estimator method name', type=str, choices=['AlphaPoseMXNet', 'SimpleBaselineMXNet', 'all'], default='all')
+    parser.add_argument('-m', '--method', help='Pose estimator method name', type=str, choices=['AlphaPoseMXNet', 'SimpleBaselineMXNet', 'DetectronCocoKeypoints', 'all'], default='all')
     parser.add_argument('-f', '--folder', dest='video_folder', help='Path to benchmark videos folder', type=str, required=True)
 
     return parser.parse_args()

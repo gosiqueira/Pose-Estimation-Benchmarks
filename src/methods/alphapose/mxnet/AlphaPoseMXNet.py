@@ -33,7 +33,7 @@ class AlphaPoseMXNet(BaseEstimator):
         raise NotImplementedError
 
     def try_gpu(self):
-        if mx.context.num_gpus() > 1:
+        if mx.context.num_gpus() >= 1:
             return mx.gpu()
         else:
             print('Warning: You are running using cpu. The running time is lower using this context.')

@@ -6,6 +6,8 @@ channels:
 dependencies:
     - python=3.6
     - pip
+    - torch
+    - torchvision
     - numpy
     - matplotlib
     - seaborn
@@ -15,3 +17,6 @@ dependencies:
     - pip:
         - mxnet-cu102
         - gluoncv
+        - cython
+        - git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI
+        - git+https://github.com/facebookresearch/detectron2.git
