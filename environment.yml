@@ -3,20 +3,20 @@ channels:
     - anaconda
     - defaults
     - conda-forge
+    - pytorch
 dependencies:
     - python=3.6
     - pip
-    - torch
-    - torchvision
+    - pytorch>=1.4
+    - torchvision>=0.3.0
     - numpy
     - matplotlib
     - seaborn
     - pandas
     - opencv
-    - cudatoolkit
+    - cudatoolkit=10.1
+    - pycocotools
     - pip:
-        - mxnet-cu102
+        - mxnet-cu101
         - gluoncv
         - cython
-        - git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI
-        - git+https://github.com/facebookresearch/detectron2.git

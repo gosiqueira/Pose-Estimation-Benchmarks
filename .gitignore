@@ -1,2 +1,5 @@
 slurm_out
-run_benchmark.sh
+run_benchmarks.sh
+src/*.log
+detectron2/
+pose_estimatiors.xlsx

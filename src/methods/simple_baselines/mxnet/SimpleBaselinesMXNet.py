@@ -10,20 +10,24 @@ from methods.BaseEstimator import BaseEstimator
 class SimpleBaselinesMXNet(BaseEstimator):
     def __init__(self):
         self.ctx = self.try_gpu()
-        self.detector = model_zoo.get_model('yolo3_mobilenet1.0_coco', pretrained=True)
-        self.pose_net = model_zoo.get_model('simple_pose_resnet50_v1b', pretrained=True)
+        self.detector = model_zoo.get_model('yolo3_mobilenet1.0_coco', pretrained=True, ctx=self.ctx)
+        self.pose_net = model_zoo.get_model('simple_pose_resnet50_v1b', pretrained='ccd24037', ctx=self.ctx)
 
-        self.detector.reset_class(['person'], reuse_weights=['person'])
+        self.detector.reset_class(classes=['person'], reuse_weights={'person': 'person'})
+
+        self.detector.hybridize()
+        self.pose_net.hybridize()
+
         self.transformer = data.transforms.presets.yolo.transform_test
         
     def get_poses(self, image):
-        x, image = self.transformer(mx.nd.array(image), short=512)
-        x.as_in_context(self.ctx)
+        x, image = self.transformer(mx.nd.array(image).astype('uint8'), short=512)
+        x = x.as_in_context(self.ctx)
 
         class_IDs, scores, bounding_boxs = self.detector(x)
-        pose_input, upscale_bbox = detector_to_simple_pose(image, class_IDs, scores, bounding_boxs)
+        pose_input, upscale_bbox = detector_to_simple_pose(image, class_IDs, scores, bounding_boxs, output_shape=(128, 96), ctx=self.ctx)
 
-        if pose_input is not None:
+        if len(upscale_bbox) > 0:
             predicted_heatmap = self.pose_net(pose_input)
             return heatmap_to_coord_alpha_pose(predicted_heatmap, upscale_bbox)
         else:

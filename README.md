@@ -1,4 +1,4 @@
-# Pose-Estimation-Benchmarks
+# Pose Estimation Benchmarks
 
 ![GitHub](https://img.shields.io/github/license/gosiqueira/Pose-Estimation-Benchmarks)
 

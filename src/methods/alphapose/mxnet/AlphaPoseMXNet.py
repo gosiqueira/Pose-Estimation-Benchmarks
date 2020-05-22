@@ -10,21 +10,26 @@ from methods.BaseEstimator import BaseEstimator
 class AlphaPoseMXNet(BaseEstimator):
     def __init__(self):
         self.ctx = self.try_gpu()
-        self.detector = model_zoo.get_model('yolo3_mobilenet1.0_coco', pretrained=True)
-        self.pose_net = model_zoo.get_model('alpha_pose_resnet101_v1b_coco', pretrained=True)
+        self.detector = model_zoo.get_model('yolo3_mobilenet1.0_coco', pretrained=True, ctx=self.ctx)
+        self.pose_net = model_zoo.get_model('alpha_pose_resnet101_v1b_coco', pretrained=True, ctx=self.ctx)
 
-        self.detector.reset_class(['person'], reuse_weights=['person'])
+        self.detector.reset_class(classes=['person'], reuse_weights={'person': 'person'})
+
+        self.detector.hybridize()
+        self.pose_net.hybridize()
+
         self.transformer = data.transforms.presets.yolo.transform_test
         
     def get_poses(self, image):
-        x, image = self.transformer(mx.nd.array(image), short=512)
-        x.as_in_context(self.ctx)
+        x, image = self.transformer(mx.nd.array(image).astype('uint8'), short=512)
+        x = x.as_in_context(self.ctx)
 
         class_IDs, scores, bounding_boxs = self.detector(x)
-        pose_input, upscale_bbox = detector_to_alpha_pose(image, class_IDs, scores, bounding_boxs)
-
-        if pose_input is not None:
-            predicted_heatmap = self.pose_net(pose_input)
+        pose_input, upscale_bbox = detector_to_alpha_pose(image, class_IDs, scores, bounding_boxs, ctx=self.ctx)
+        
+        if len(upscale_bbox) > 0:
+            pose_input = pose_input.as_in_context(self.ctx) 
+            predicted_heatmap = self.pose_net(pose_input).as_in_context(mx.cpu())
             return heatmap_to_coord_alpha_pose(predicted_heatmap, upscale_bbox)
         else:
             return mx.nd.array([]), mx.nd.array([])
