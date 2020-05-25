@@ -11,7 +11,7 @@ class DetectronCocoKeypoints(BaseEstimator):
         self.cfg.merge_from_file(model_zoo.get_config_file("COCO-Keypoints/keypoint_rcnn_R_50_FPN_3x.yaml"))
         self.cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
         self.cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Keypoints/keypoint_rcnn_R_50_FPN_3x.yaml")
-        self.predictor = DefaultPredictor(cfg)
+        self.predictor = DefaultPredictor(self.cfg)
 
     def get_poses(self, image):
         outputs = self.predictor(image)
