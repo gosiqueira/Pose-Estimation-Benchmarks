@@ -1,5 +1,7 @@
 slurm_out
 run_benchmarks.sh
-src/*.log
+*.log
 detectron2/
 pose_estimatiors.xlsx
+*.pth
+src/methods/hrnet/models/detectors/yolo/weights/darknet53.conv.74

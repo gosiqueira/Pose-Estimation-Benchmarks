@@ -14,5 +14,5 @@ module load cuda/10.1
 module load cudnn/7.6.5_for_cuda_10.1
 
 cd src/
-srun python benchmark.py -f /shared/sense/ana/videos_anotados -m HRNet
+srun python benchmark.py -f /shared/sense/ana/videos_anotados
 
