@@ -8,7 +8,7 @@ Current methods:
 * AlphaPose (MXNet)
 * Alphapose (PyTorch) (comming soon)
 * Detectron Coco Keypoints
-* HRNet: High-Resolution Network (comming soon)
+* HRNet: High-Resolution Network
 * Higher HRNet (comming soon)
 * OpenPose (comming soon)
 * Simple Baselines for Human Pose Estimation (MXNet)
