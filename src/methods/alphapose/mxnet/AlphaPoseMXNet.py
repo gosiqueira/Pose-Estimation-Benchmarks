@@ -27,7 +27,7 @@ class AlphaPoseMXNet(BaseEstimator):
         class_IDs, scores, bounding_boxs = self.detector(x)
         pose_input, upscale_bbox = detector_to_alpha_pose(image, class_IDs, scores, bounding_boxs, ctx=self.ctx)
         
-        if len(upscale_bbox) > 0:
+        if upscale_bbox is not None and len(upscale_bbox) > 0:
             pose_input = pose_input.as_in_context(self.ctx) 
             predicted_heatmap = self.pose_net(pose_input).as_in_context(mx.cpu())
             return heatmap_to_coord_alpha_pose(predicted_heatmap, upscale_bbox)

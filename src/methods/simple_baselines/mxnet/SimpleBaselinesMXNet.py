@@ -11,7 +11,7 @@ class SimpleBaselinesMXNet(BaseEstimator):
     def __init__(self):
         self.ctx = self.try_gpu()
         self.detector = model_zoo.get_model('yolo3_mobilenet1.0_coco', pretrained=True, ctx=self.ctx)
-        self.pose_net = model_zoo.get_model('simple_pose_resnet50_v1b', pretrained='ccd24037', ctx=self.ctx)
+        self.pose_net = model_zoo.get_model('simple_pose_resnet50_v1b', pretrained=True, ctx=self.ctx)
 
         self.detector.reset_class(classes=['person'], reuse_weights={'person': 'person'})
 
@@ -27,8 +27,10 @@ class SimpleBaselinesMXNet(BaseEstimator):
         class_IDs, scores, bounding_boxs = self.detector(x)
         pose_input, upscale_bbox = detector_to_simple_pose(image, class_IDs, scores, bounding_boxs, output_shape=(128, 96), ctx=self.ctx)
 
-        if len(upscale_bbox) > 0:
-            predicted_heatmap = self.pose_net(pose_input)
+        if upscale_bbox is not None and len(upscale_bbox) > 0:
+            if(type(upscale_bbox) == list):
+                upscale_bbox = np.array(upscale_bbox)
+            predicted_heatmap = self.pose_net(pose_input).as_in_context(mx.cpu())
             return heatmap_to_coord_alpha_pose(predicted_heatmap, upscale_bbox)
         else:
             return mx.nd.array([]), mx.nd.array([])

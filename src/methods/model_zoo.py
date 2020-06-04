@@ -16,4 +16,5 @@ def get_model(model_str_name):
     elif model_str_name == 'HRNet':
         return HRNet()
     else:
+        print(f'{model_str_name} is not a valid pose estimation model.')
         raise NotImplementedError

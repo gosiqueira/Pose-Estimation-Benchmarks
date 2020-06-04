@@ -1,3 +1,5 @@
+import torch
+
 from detector.apis import get_detector
 from alphapose.models import builder
 from alphapose.utils.config import update_config
@@ -9,31 +11,32 @@ from methods.BaseEstimator import BaseEstimator
 class AlphaPosePyTorch(BaseEstimator):
     def __init__(self):
         self.device = try_gpu()
-        cfg = update_config(args.cfg)
-        det_loader = DetectionLoader(input_source, get_detector(args), cfg, args, batchSize=args.detbatch, mode=mode, queueSize=args.qsize)
-        det_worker = det_loader.start()
+        self.cfg = update_config('configs/coco/resnet/256x192_res50_lr1e-3_1x.yaml')
 
-        pose_model = builder.build_sppe(cfg.MODEL, preset_cfg=cfg.DATA_PRESET)
-        pose_model.load_state_dict(torch.load(args.checkpoint, map_location=self.device))
+        self.detector = get_detector({'detector': yolo})
+        self.detector.load_model()
+
+        self.pose_net = builder.build_sppe(self.cfg.MODEL, preset_cfg=self.cfg.DATA_PRESET)
+        self.pose_net.load_state_dict(torch.load('pretrained_models/fast_res50_256x192.pth', map_location=self.device))
 
         pose_model.to(self.device)
 
     def get_poses(self, image):
         with torch.no_grad():
-        (inps, orig_img, im_name, boxes, scores, ids, cropped_boxes) = det_loader.read()
-        if orig_img is None:
-            break
+            x = self.detector.image_preprocess(image)
+            x = x.to(self.device)
+            inps = self.detector.model(x)
+            
+            inps = inps.to(self.device)
+            heatmap = self.pose_net(inps)
 
-        inps = inps.to(args.device)
-        heatmap = pose_model(inps)
-
-        print(heatmap)
-        return heatmap
+            print(heatmap)
+            return heatmap
 
     def eval(self, true, pred):
         raise NotImplementedError
 
-    def try_gpy(self):
+    def try_gpu(self):
         if torch.cuda.is_available():
             return torch.device('cuda')
         else:
